@@ -13,7 +13,7 @@ const itemVariants = {
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="container mx-auto px-6 py-10">
+    <section id="how-it-works" className="container mx-auto px-6 py-34">
       <motion.div
         className="text-center mb-8"
         initial={{ opacity: 0, y: 20 }}

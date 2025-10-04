@@ -5,7 +5,7 @@ import CosmicBackground from "../ui/CosmicBackground";
 import { SparklesCore } from "../ui/Sparkles";
 
 const Background = memo(() => (
-  <div className="fixed inset-0 -z-10">
+  <div className="fixed inset-0 -z-10 bg-black/30">
     <CosmicBackground />
     <SparklesCore
       id="tsparticlesfullpage"

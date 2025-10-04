@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
-      <motion.div className="mb-6" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div className="mb-6 mt-12" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm text-gray-300 backdrop-blur-sm">
           NASA Space Apps Challenge 2025
         </span>
@@ -33,7 +33,7 @@ export default function Hero() {
 
       <Link href="/analysis">
         <motion.button
-          className="px-8 py-4 text-lg font-semibold rounded-full bg-gray-600 text-white shadow-lg shadow-white/50 transition-all duration-300 mb-8"
+          className="px-8 py-4 text-lg font-semibold rounded-full bg-gray-600 text-white shadow-lg shadow-white/50 transition-all duration-300 mb-18"
           whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px #FFFFFF" }}
           whileTap={{ scale: 0.95 }}
         >
@@ -44,7 +44,7 @@ export default function Hero() {
       <Image
         src="/backgrounds/figure.png"
         alt="Figure"
-        className="absolute z-0 bottom-8 opacity-75 pointer-events-none"
+        className="absolute z-0 bottom-0 mb-0 opacity-75 pointer-events-none"
         width={220}
         height={220}
       />

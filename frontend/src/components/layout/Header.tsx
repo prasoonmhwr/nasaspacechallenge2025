@@ -2,8 +2,22 @@
 import { motion } from "framer-motion";
 import { Github } from "lucide-react";
 import Logo from "../ui/Logo";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
+
+  const navItems = [
+    { label: "Analysis", href: "/analysis" },
+    { label: "How It Works", href: "#how-it-works" },
+    { label: "About", href: "#about" },
+  ];
+
+  const handleAnalysisClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push("/analysis"); // or router.replace("/analysis") if you want to prevent forward history
+  };
+
   return (
     <motion.header
       className="fixed top-4 left-4 right-4 z-50 backdrop-blur-sm bg-black/20 border border-white/10 rounded-2xl shadow-2xl"
@@ -18,19 +32,30 @@ export default function Header() {
         </motion.div>
 
         <nav className="hidden md:flex items-center gap-8 text-xl font-medium">
-          {["Discover", "How It Works", "About"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(/\s/g, "-")}`}
-              className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-105"
-            >
-              {item}
-            </a>
-          ))}
+          {navItems.map((item) =>
+            item.label === "Analysis" ? (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={handleAnalysisClick}
+                className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-105"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-105"
+              >
+                {item.label}
+              </a>
+            )
+          )}
         </nav>
 
         <motion.a
-          href="https://github.com/your-repo"
+          href="https://github.com/prasoonmhwr/nasaspacechallenge2025"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-gray-400/30 transition-all duration-300 backdrop-blur-sm"

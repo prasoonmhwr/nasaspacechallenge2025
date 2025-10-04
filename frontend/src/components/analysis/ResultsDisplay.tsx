@@ -15,6 +15,7 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-black/30 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-4">
+        { /* @ts-expect-error planetData */ }
           <TransitAnimation planetData={result.planetData} stellarData={result.stellarData} />
         </div>
         <div className="space-y-8">
