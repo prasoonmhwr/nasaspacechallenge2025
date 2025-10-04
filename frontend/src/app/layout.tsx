@@ -8,7 +8,6 @@ export const myFontNormal = localFont({
 });
 
 export const metadata = {
-  title: "OrbitAI – Nasa Space Apps 2025",
   description: "A World Away",
 };
 
