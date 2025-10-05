@@ -9,6 +9,8 @@ import ResultsDisplay from "./ResultsDisplay"; // This will be used by Star ID r
 import BatchResultsDisplay from "./BatchResultsDisplay"; // This will be used by Upload result
 import StellarContext from "../ui/StellarContext"; // Direct display for star info
 
+const BACKEND_URL = "http://127.0.0.1:8001"
+
 export default function AnalysisEngine() {
   const [activeTab, setActiveTab] = useState("upload");
   const [starId, setStarId] = useState("Kepler-186");
@@ -49,7 +51,7 @@ export default function AnalysisEngine() {
         const formData = new FormData();
         formData.append('file', file);
         
-        const response = await fetch('http://127.0.0.1:8000/api/exoplanet-detection-csv', {
+        const response = await fetch(`${BACKEND_URL}/api/exoplanet-detection-csv`, {
           method: 'POST',
           body: formData,
         });
@@ -63,7 +65,7 @@ export default function AnalysisEngine() {
       } else if (activeTab === 'star-id') {
         if (!starId.trim()) throw new Error("Please enter a Star ID.");
 
-        const response = await fetch("http://127.0.0.1:8000/api/star-info", {
+        const response = await fetch(`${BACKEND_URL}/api/star-info`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ star_name: starId })
