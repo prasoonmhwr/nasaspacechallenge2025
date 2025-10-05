@@ -1,7 +1,7 @@
 # A World Away: Hunting for Exoplanets with AI
 
 
-> A submission for the **NASA Space Apps Challenge 2025**. [cite_start]This project introduces **OrbitAI**, a web-based platform designed to accelerate the discovery and validation of exoplanets using machine learning.
+> A submission for the **NASA Space Apps Challenge 2025**. This project introduces **OrbitAI**, a web-based platform designed to accelerate the discovery and validation of exoplanets using machine learning.
 
 ---
 
