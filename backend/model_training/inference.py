@@ -1,6 +1,6 @@
 import joblib
 import pandas as pd
-from feature_engineering import add_physics_features, preprocess_features
+from .feature_engineering import add_physics_features, preprocess_features
 
 model = joblib.load('ensemble_model.sav')
 scaler = joblib.load('scaler.sav')
