@@ -1,60 +1,81 @@
-# A World Away: Hunting for Exoplanets with AI
+# 🌌 A World Away: Hunting for Exoplanets with AI
 
-
-> A submission for the **NASA Space Apps Challenge 2025**. This project introduces **OrbitAI**, a web-based platform designed to accelerate the discovery and validation of exoplanets using machine learning.
+> A submission for the **NASA Space Apps Challenge 2025**.  
+> This project introduces **OrbitAI**, a web-based platform designed to accelerate the discovery and validation of exoplanets using machine learning.
 
 ---
 
 ## 📜 The Challenge
 
-The discovery of over 4,000 exoplanets has been revolutionary, but the detection process is slow and fraught with challenges. Methods like the transit technique are limited by rare orbital alignments. A significant bottleneck is the high rate of **false positives** (e.g., eclipsing binary stars) that require time-intensive manual review to validate candidates, particularly from missions like **Kepler**.
+The discovery of over 4,000 exoplanets has been revolutionary, but the detection process remains slow and challenging. Techniques such as the **transit method** are limited by rare orbital alignments, and a major bottleneck is the high rate of **false positives** (e.g., eclipsing binary stars).  
+These issues require time-consuming manual validation, especially for data from missions like **Kepler**.
 
-The goal is to create a reliable, automated system to prioritize the most promising planet candidates, thereby accelerating the search for habitable worlds and expanding our understanding of the universe.
+The goal of this project is to create a **reliable, automated system** to prioritize the most promising exoplanet candidates — accelerating the search for habitable worlds and expanding our understanding of the universe.
 
 ---
 
 ## 💡 Our Solution: OrbitAI
 
-To tackle this challenge, we built **OrbitAI**—a user-friendly, sleek web interface that streamlines exoplanet detection. Our platform leverages a powerful machine learning model to analyze astronomical data and provide instant predictions, making exoplanet vetting fast, accurate, and accessible.
+To tackle this challenge, we built **OrbitAI** — a sleek, user-friendly web platform that streamlines exoplanet detection.  
+OrbitAI leverages a powerful machine learning model to analyze astronomical data and deliver instant predictions — making exoplanet vetting **fast, accurate, and accessible**.
 
-
+---
 
 ### ✨ Key Features
 
--   **Batch Analysis**: Upload a CSV file with data for multiple planet candidates and receive a complete analysis classifying each entry[cite: 41]. The interface shows a clear summary of rows processed, exoplanets found, and any errors.
-    
-    
--   **Planet Lookup**: Enter the name of a star or planet candidate (e.g., Kepler-146 b) to retrieve its confirmed status, orbital period, radius, and AI score from NASA's archives.
--   **Manual Entry**: Input specific transit parameter values directly into the interface to get an instant prediction from our AI model.
+- **Batch Analysis**: Upload a CSV file containing multiple planet candidates to receive a full classification report. The interface summarizes total rows processed, exoplanets found, and any detected errors.
+
+- **Planet Lookup**: Search by star or planet name (e.g., `Kepler-146 b`) to fetch real-time details like status, orbital period, radius, and AI-generated confidence scores from NASA archives.
+
+- **Manual Entry**: Input specific transit parameter values manually to get instant predictions from our trained AI model.
 
 ---
 
 ## 🛠️ Technical Implementation
 
-OrbitAI is powered by a robust backend and a minimalist frontend, built on a carefully constructed machine learning pipeline.
+OrbitAI combines a robust backend with a clean, responsive frontend — all powered by a carefully designed **machine learning pipeline**.
 
 ### 📊 Data Sources
 
--   **Primary Datasets**: We utilized NASA's public **Kepler Object of Interest (KOI)** and **TESS Object of Interest (TOI)** datasets for training and validation.
--   **Research**: Our methodology was informed by insights from two research articles on ensemble-based machine learning for exoplanet identification.
+- **Primary Datasets:**  
+  - NASA’s **Kepler Object of Interest (KOI)** dataset  
+  - NASA’s **TESS Object of Interest (TOI)** dataset  
+- **Research Basis:**  
+  Methodology inspired by peer-reviewed research on **ensemble-based ML for exoplanet identification**.
+
+---
 
 ### 🤖 Machine Learning Pipeline
 
-1.  **Preprocessing**: We meticulously cleaned the data by handling outliers (**IQR**), imputing missing values (**Simple/KNN imputers**), addressing data leakage, and applying **Standard Scaler** and log scaling.
-2.  **Feature Engineering**: We created a "natural vs. artificial score" feature to enhance model accuracy.
-3.  **The Model**: We implemented a **Voting Classifier** combining the strengths of **RandomForest**, **XGBoost**, and **CatBoost**. [cite_start]This ensemble was validated against a **LightGBM** model for performance.
+1. **Preprocessing**  
+   - Outlier handling using **IQR**  
+   - Missing value imputation via **SimpleImputer / KNNImputer**  
+   - Feature scaling (StandardScaler + log transformations)  
+   - Data leakage prevention and validation checks  
 
-### ⚙️ Backend
+2. **Feature Engineering**  
+   - Introduced a *"natural vs. artificial score"* feature to improve model discrimination.
 
-The backend is built with Python and serves the core logic of our application. Based on the project files, it:
--   Hosts the pre-trained `ensemble_model.sav` and `scaler.sav` for making live predictions.
--   Uses `main.py` as the entry point for the web server/API.
--   Manages dependencies with a `requirements.txt` file.
--   Includes Jupyter Notebooks (`experiment*.ipynb`) for model training and experimentation.
+3. **Model Architecture**  
+   - Core model: **Voting Classifier** ensemble  
+   - Components: **RandomForest**, **XGBoost**, **CatBoost**  
+   - Validated against a **LightGBM** baseline for performance benchmarking.  
+
+---
+
+### ⚙️ Backend Architecture
+
+- **Language:** Python  
+- **Key Components:**  
+  - `ensemble_model.sav` and `scaler.sav` — pre-trained model and scaler  
+  - `main.py` — entry point and API server  
+  - `requirements.txt` — dependency management  
+  - `experiment*.ipynb` — model training notebooks  
 
 ---
 
 ## 🌳 Project Structure
+
 
 .
 ├── pycache/
@@ -74,54 +95,63 @@ The backend is built with Python and serves the core logic of our application. B
 └── uv.lock
 
 
+
 ---
 
 ## 🚀 Getting Started
 
-To run this project locally, follow these steps.
+Follow these steps to set up and run OrbitAI locally.
 
-1.  **Clone the repository:**
-    ```sh
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-    cd your-repo-name
-    ```
-2.  **Create and activate a virtual environment:**
-    ```sh
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-    ```
-3.  **Install dependencies:**
-    ```sh
-    pip install -r requirements.txt
-    ```
-4.  **Run the application:**
-    ```sh
-    python main.py
-    ```
-5.  Open your browser and navigate to the local server address 
----
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/your-repo-name.git
+   cd your-repo-name
 
-## 🔮 Future Work
+2. **Create and Activate a Virtual Environment**
 
-We have an exciting roadmap for OrbitAI:
+python -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
 
--   **Real-time Data Integration**: Expand the platform to incorporate live data from ongoing NASA missions like TESS.
--   **Deep Learning Models**: Enhance accuracy by implementing deep learning techniques, such as the `astronet` model.
--   **Community Partnerships**: Partner with observatories and academic institutions to scale OrbitAI into a widely adopted tool.
 
----
+3. **Install Dependencies**
+
+pip install -r requirements.txt
+
+
+4. **Run the Application**
+
+python main.py
+
+
+5. **Access the Web App**
+Open your browser and go to the local server address displayed in the terminal (e.g., http://127.0.0.1:5000).
+
+🔮 Future Work
+
+Our roadmap includes exciting extensions for OrbitAI:
+
+Real-time Data Integration: Incorporate live data streams from active NASA missions like TESS.
+
+Deep Learning Models: Explore advanced deep learning approaches such as Astronet for improved accuracy.
+
+Community Partnerships: Collaborate with observatories and academic institutions to expand OrbitAI into a widely used scientific tool.
 
 ## 👥 Team Members
 
--   Tushar Mishra (Team Owner) 
--   Om Santosh Mishra 
--   Dip Koonjoobeeharry 
--   Prasoon Mahawar 
--   Shaik Mohammed Noorullah 
--   Disha Faujdar 
+Tushar Mishra — Team Owner
 
----
+Om Santosh Mishra
+
+Dip Koonjoobeeharry
+
+Prasoon Mahawar
+
+Shaik Mohammed Noorullah
+
+Disha Faujdar
 
 ## 🙏 Acknowledgements
 
-We'd like to extend our sincere gratitude to our mentors, collaborators, and **NASA*
+Our deepest gratitude to our mentors, collaborators, and the NASA Space Apps Challenge community for their guidance and inspiration.
+
+### 🛰️ “Somewhere, something incredible is waiting to be known.” — Carl Sagan
