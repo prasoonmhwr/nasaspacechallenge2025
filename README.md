@@ -125,7 +125,7 @@ python main.py
 5. **Access the Web App**
 Open your browser and go to the local server address displayed in the terminal (e.g., http://127.0.0.1:5000).
 
-🔮 Future Work
+## 🔮 Future Work
 
 Our roadmap includes exciting extensions for OrbitAI:
 
