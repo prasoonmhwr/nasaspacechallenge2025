@@ -35,3 +35,8 @@ export interface BatchResult {
     row_number: number;
   }>;
 }
+
+export interface ManualPrediction {
+  status: string;
+  prediction: "CONFIRMED" | "CANDIDATE" | "FALSE POSITIVE" | "UNKNOWN";
+}

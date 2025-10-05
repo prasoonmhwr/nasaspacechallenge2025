@@ -32,7 +32,7 @@ const defaultManualInput = {
   koi_srad: 1.0,
   koi_slogg: 4.4,
   koi_score: 0.5,
-  koi_pdisposition_bin: 1,
+  koi_pdisposition_bin: 1.2,
 };
 
 export default function AnalysisEngine() {
@@ -141,11 +141,15 @@ export default function AnalysisEngine() {
         setManualPrediction(data);
       }
 
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError(String(err)); // fallback for non-Error throws
+  }
+} finally {
+  setIsLoading(false);
+}
   };
 
   // --- UI Render ---

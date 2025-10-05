@@ -2,6 +2,13 @@ import joblib
 import pandas as pd
 from .feature_engineering import add_physics_features, preprocess_features
 
+MODEL_COLUMNS = [
+    'koi_period', 'koi_time0bk', 'koi_duration', 'koi_depth', 'koi_prad',
+    'koi_impact', 'koi_model_snr', 'koi_score', 'koi_pdisposition_bin',
+    'koi_steff', 'koi_srad', 'koi_slogg'
+]
+
+# Load the model and scaler
 model = joblib.load('ensemble_model.sav')
 scaler = joblib.load('scaler.sav')
 encode_map = { "FALSE POSITIVE": 0, "CANDIDATE": 1, "CONFIRMED": 2 }
@@ -9,6 +16,7 @@ decode_map = {v: k for k, v in encode_map.items()}
 
 def predict_one(json_input):
     df = pd.DataFrame([json_input])
+    df = df[MODEL_COLUMNS]
     df = add_physics_features(df)
     df = preprocess_features(df)
     X = scaler.transform(df)
