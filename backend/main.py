@@ -228,7 +228,7 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing CSV file: {str(e)}")
-    
+
 @app.post("/api/predictOne")
 async def predict(request: Request):
     try:
@@ -238,3 +238,18 @@ async def predict(request: Request):
     except Exception as e:
          raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
    
+
+
+
+if __name__ == "__main__":
+    # Allow starting the app with: python main.py
+    # This requires `uvicorn` to be installed in the environment.
+    try:
+        import uvicorn
+    except Exception:
+        raise RuntimeError(
+            "uvicorn is required to run the app. Install it with `pip install uvicorn[standard]` or use `pip install .` to install project deps.`"
+        )
+
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
