@@ -78,7 +78,7 @@ OrbitAI combines a robust backend with a clean, responsive frontend — all powe
 
 ## 🌳 Project Structure
 
-```plaintext
+
 .
 ├── __pycache__/
 ├── catboost_info/
@@ -95,7 +95,6 @@ OrbitAI combines a robust backend with a clean, responsive frontend — all powe
 ├── sample_planets.csv
 ├── scaler.sav
 └── uv.lock
-
 
 
 ---
