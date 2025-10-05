@@ -1,3 +1,4 @@
+from urllib.request import Request
 from backend.model_training.inference import predict_one
 from fastapi import FastAPI, Query, UploadFile, File, HTTPException
 from pydantic import BaseModel
@@ -228,23 +229,12 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing CSV file: {str(e)}")
     
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    if file.content_type != 'text/csv':
-        raise HTTPException(status_code=400, detail="File must be a CSV")
-    content = await file.read()
+@app.post("/predictOne")
+async def predict(request: Request):
     try:
-        df = pd.read_csv(StringIO(content.decode('utf-8')))
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid CSV file")
-    try:
-        
-        results = []
-        for index, row in df.iterrows():
-            data = row.to_dict()
-            result = predict_one(data)
-            results.append(result)
-        return {"predictions": results}
+        data = await request.json()
+        result = predict_one(data)
+        return result
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Preprocessing failed: {str(e)}")
+         raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
    
