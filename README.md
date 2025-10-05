@@ -17,9 +17,8 @@ OrbitAI in action!
 ![Manual Entry Mode](media/images/manual.png)
 
 🎥 Video Demos
-<video src="media/videos/webpage.mp4" controls width="750">
-    Webpage Demo Video
-</video>
+![Watch the video](https://youtu.be/yCSASigQ0u0)
+
 <br>
 <video src="media/videos/analysis.mp4" controls width="750">
     Analysis Feature Demo
