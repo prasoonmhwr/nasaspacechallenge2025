@@ -17,6 +17,7 @@ OrbitAI in action!
 ![Manual Entry Mode](media/images/manual.png)
 
 🎥 Video Demos
+![Demo video](https://youtu.be/GWi4qGd9cGs)
 ![Watch the video](https://youtu.be/yCSASigQ0u0)
 
 <br>
