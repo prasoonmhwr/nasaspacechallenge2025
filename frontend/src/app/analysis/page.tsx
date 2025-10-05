@@ -4,6 +4,8 @@ import Image from "next/image";
 import { SparklesCore } from "@/components/ui/Sparkles";
 import { memo } from "react";
 import localFont from "next/font/local";
+import Header from "@/components/layout/Header";
+import Header2 from "@/components/layout/Header2";
 
 export const myFontNormal = localFont({
   src: "../../assets/normal.ttf",
@@ -54,8 +56,9 @@ export default function AnalysisPage() {
 
       {/* Content Container */}
       <div className="relative min-h-screen w-full">
+        <Header2 />
         {/* Header Section */}
-        <header className="w-full pt-20 sm:pt-24 pb-8 px-4 sm:px-6 lg:px-8">
+        <header className="w-full mt-16 sm:pt-24 pb-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
             <div className="inline-block mb-4">
               <span className="text-xs sm:text-sm font-semibold tracking-wider text-white/70 uppercase px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">

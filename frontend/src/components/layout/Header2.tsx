@@ -4,14 +4,13 @@ import { Github } from "lucide-react";
 import Logo from "../ui/Logo";
 import { useRouter } from "next/navigation";
 
-export default function Header() {
+export default function Header2() {
   const router = useRouter();
 
   const navItems = [
+    { label: "Home", href: "/" },
     { label: "Analysis", href: "/analysis" },
     { label: "Archive", href: "/archive" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "About", href: "#about" },
   ];
 
   const handleNavClick = (
