@@ -9,7 +9,7 @@ import ResultsDisplay from "./ResultsDisplay"; // This will be used by Star ID r
 import BatchResultsDisplay from "./BatchResultsDisplay"; // This will be used by Upload result
 import StellarContext from "../ui/StellarContext"; // Direct display for star info
 
-const BACKEND_URL = "http://127.0.0.1:8001"
+const BACKEND_URL = "http://127.0.0.1:8000"
 
 export default function AnalysisEngine() {
   const [activeTab, setActiveTab] = useState("upload");

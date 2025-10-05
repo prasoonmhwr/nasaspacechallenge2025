@@ -26,14 +26,11 @@ export interface BatchResult {
   summary: {
     total_rows_processed: number;
     exoplanets_found: number;
-    non_exoplanets: number;
     errors: number;
   };
   results: Array<{
-    is_exoplanet?: boolean;
-    matching_planet?: {
-      kepler_name: string;
-    };
+    prediction?: "CONFIRMED" | "CANDIDATE" | "FALSE POSITIVE";
+    proba?: number[];
     error?: string;
     row_number: number;
   }>;
