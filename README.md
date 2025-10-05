@@ -14,7 +14,7 @@ OrbitAI in action!
 ![CSV Result Report](media/images/csv-result.png)
 ![Star ID Lookup](media/images/star-id.png)
 ![NASA Archive Details](media/images/archive.png)
-![Manual Entry Mode](media/images/manual.jpg)
+![Manual Entry Mode](media/images/manual.png)
 
 🎥 Video Demos
 <video src="media/videos/webpage.mp4" controls width="750">
