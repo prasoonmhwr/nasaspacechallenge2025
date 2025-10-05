@@ -5,6 +5,5 @@ imbalanced-learn
 xgboost
 catboost
 requests
-Flask 
 fastapi
 gunicorn
