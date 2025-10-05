@@ -9,13 +9,18 @@ export default function Header() {
 
   const navItems = [
     { label: "Analysis", href: "/analysis" },
+    { label: "Archive", href: "/archive" },
     { label: "How It Works", href: "#how-it-works" },
     { label: "About", href: "#about" },
   ];
 
-  const handleAnalysisClick = (e: React.MouseEvent) => {
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
     e.preventDefault();
-    router.push("/analysis"); // or router.replace("/analysis") if you want to prevent forward history
+    if (href.startsWith("/")) router.push(href);
+    else window.location.href = href;
   };
 
   return (
@@ -28,30 +33,20 @@ export default function Header() {
       <div className="container mx-auto px-8 py-4 flex justify-between items-center">
         <motion.div className="flex items-center gap-3" whileHover={{ scale: 1.05 }}>
           <Logo />
-          <h1 className="text-white text-xl">OrbitAI</h1>
+          <h1 className="text-white text-xl font-semibold tracking-wide">OrbitAI</h1>
         </motion.div>
 
-        <nav className="hidden md:flex items-center gap-8 text-xl font-medium">
-          {navItems.map((item) =>
-            item.label === "Analysis" ? (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={handleAnalysisClick}
-                className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-105"
-              >
-                {item.label}
-              </a>
-            ) : (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-105"
-              >
-                {item.label}
-              </a>
-            )
-          )}
+        <nav className="hidden md:flex items-center gap-8 text-lg font-medium">
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={(e) => handleNavClick(e, item.href)}
+              className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-105"
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
 
         <motion.a
@@ -59,7 +54,10 @@ export default function Header() {
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-gray-400/30 transition-all duration-300 backdrop-blur-sm"
-          whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(251, 146, 60, 0.3)" }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: "0 0 20px rgba(251, 146, 60, 0.3)",
+          }}
           whileTap={{ scale: 0.95 }}
         >
           <Github size={18} />

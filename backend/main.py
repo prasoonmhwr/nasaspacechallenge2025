@@ -1,5 +1,3 @@
-from urllib.request import Request
-from backend.model_training.inference import predict_one
 from fastapi import FastAPI, Query, UploadFile, File, HTTPException
 from pydantic import BaseModel
 import requests
@@ -13,6 +11,7 @@ import json
 import os
 import pandas as pd
 from typing import List, Dict, Any
+from model_training.inference import predict_one
 
 app = FastAPI()
 
@@ -177,6 +176,11 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
     """
     Upload a CSV file to detect exoplanets for multiple planets at once.
     
+    Expected CSV format:
+    - period: Orbital period in days
+    - impact: Impact parameter (0-1) 
+    - depth: Transit depth in parts per million
+    
     Returns:
         List of exoplanet detection results for each row in the CSV
     """
@@ -192,26 +196,93 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
         # Parse CSV using pandas
         df = pd.read_csv(StringIO(csv_content))
         
-        # Validate required columns
-        required_columns = ['period', 'impact', 'depth']
-        missing_columns = [col for col in required_columns if col not in df.columns]
-        if missing_columns:
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Missing required columns: {missing_columns}. Required columns are: {required_columns}"
-            )
+        # Define column mappings for flexibility
+        column_mappings = {
+            'period': ['period', 'Period', 'PERIOD', 'orbital_period', 'orbital period', 'days', 'Days', 'koi_period'],
+            'impact': ['impact', 'Impact', 'IMPACT', 'impact_parameter', 'impact parameter', 'b', 'B', 'koi_impact'],
+            'depth': ['depth', 'Depth', 'DEPTH', 'transit_depth', 'transit depth', 'ppm', 'PPM', 'koi_depth']
+        }
+        
+        # Check if CSV already has all KOI columns (full dataset)
+        koi_columns = ['koi_period', 'koi_time0bk', 'koi_duration', 'koi_depth', 'koi_prad', 
+                      'koi_impact', 'koi_model_snr', 'koi_score', 'koi_pdisposition_bin', 
+                      'koi_steff', 'koi_srad', 'koi_slogg']
+        
+        has_all_koi_columns = all(col in df.columns for col in koi_columns)
+        
+        if has_all_koi_columns:
+            # Use the full KOI dataset directly, but filter to only expected columns
+            expected_columns = ['koi_period', 'koi_time0bk', 'koi_duration', 'koi_depth', 'koi_prad', 
+                               'koi_impact', 'koi_model_snr', 'koi_score', 'koi_pdisposition_bin', 
+                               'koi_steff', 'koi_srad', 'koi_slogg', 'koi_depth_log', 'koi_model_snr_log',
+                               'transit_strength', 'planet_star_ratio', 'impact_depth_product', 'period_duration_ratio']
+            
+            # Filter to only include expected columns (ignore any extra columns like 'Unnamed: 0')
+            available_columns = [col for col in expected_columns if col in df.columns]
+            df_processed = df[available_columns].copy()
+            mapped_columns = "Full KOI dataset - no mapping needed"
+        else:
+            # Map columns to standard names
+            df_mapped = df.copy()
+            mapped_columns = {}
+            
+            for standard_name, possible_names in column_mappings.items():
+                found_column = None
+                for possible_name in possible_names:
+                    if possible_name in df.columns:
+                        found_column = possible_name
+                        break
+                
+                if found_column:
+                    if found_column != standard_name:
+                        df_mapped[standard_name] = df[found_column]
+                        mapped_columns[found_column] = standard_name
+                else:
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Missing required column for '{standard_name}'. Looking for one of: {possible_names}. Found columns: {list(df.columns)}"
+                    )
+            
+            # Use the mapped dataframe with default values
+            df_processed = df_mapped[['period', 'impact', 'depth']].copy()
         
         # Process each row
         results = []
-        for index, row in df.iterrows():
-            data = row.to_dict()
+        for index, row in df_processed.iterrows():
+            if has_all_koi_columns:
+                # Use the data directly from the KOI columns
+                data = row.to_dict()
+            else:
+                # Map to the column names expected by the ML model (in correct order)
+                data = {
+                    'koi_period': row['period'],
+                    'koi_time0bk': 0.0,  # Default value
+                    'koi_duration': 4.0,  # Default value (4 hours)
+                    'koi_depth': row['depth'],
+                    'koi_prad': 1.0,  # Default value
+                    'koi_impact': row['impact'], 
+                    'koi_model_snr': 10.0,  # Default value
+                    'koi_score': 0.5,  # Default value
+                    'koi_pdisposition_bin': 0,  # Default value
+                    'koi_steff': 5778.0,  # Default value (solar temperature)
+                    'koi_srad': 1.0,  # Default value (solar radius)
+                    'koi_slogg': 4.4,  # Default value (solar log g)
+                    # Additional features will be computed by add_physics_features
+                    'koi_depth_log': 0.0,  # Will be computed
+                    'koi_model_snr_log': 0.0,  # Will be computed
+                    'transit_strength': 0.0,  # Will be computed
+                    'planet_star_ratio': 0.0,  # Will be computed
+                    'impact_depth_product': 0.0,  # Will be computed
+                    'period_duration_ratio': 0.0  # Will be computed
+                }
+            
             result = predict_one(data)
+            result['row_number'] = index + 1
             results.append(result)
-        
         
         # Calculate summary statistics
         total_rows = len(results)
-        exoplanets_found = sum(1 for r in results if r.get('is_exoplanet', False))
+        exoplanets_found = sum(1 for r in results if r.get('prediction') == 'CONFIRMED')
         errors = sum(1 for r in results if 'error' in r)
         
         return {
@@ -219,7 +290,9 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
                 "total_rows_processed": total_rows,
                 "exoplanets_found": exoplanets_found,
                 "non_exoplanets": total_rows - exoplanets_found - errors,
-                "errors": errors
+                "errors": errors,
+                "column_mappings": mapped_columns if mapped_columns else "No column mappings needed",
+                "data_type": "Full KOI dataset" if has_all_koi_columns else "Simplified dataset (period, impact, depth)"
             },
             "results": results
         }
@@ -228,17 +301,6 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing CSV file: {str(e)}")
-
-@app.post("/api/predictOne")
-async def predict(request: Request):
-    try:
-        data = await request.json()
-        result = predict_one(data)
-        return result
-    except Exception as e:
-         raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
-   
-
 
 
 if __name__ == "__main__":
@@ -252,4 +314,3 @@ if __name__ == "__main__":
         )
 
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
-
