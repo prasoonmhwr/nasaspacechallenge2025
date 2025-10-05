@@ -229,7 +229,7 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing CSV file: {str(e)}")
     
-@app.post("/predictOne")
+@app.post("/api/predictOne")
 async def predict(request: Request):
     try:
         data = await request.json()
