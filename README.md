@@ -76,9 +76,11 @@ OrbitAI combines a robust backend with a clean, responsive frontend — all powe
 
 ## 🌳 Project Structure
 
+## 🌳 Project Structure
 
+```plaintext
 .
-├── pycache/
+├── __pycache__/
 ├── catboost_info/
 ├── model_training/
 ├── .python-version
