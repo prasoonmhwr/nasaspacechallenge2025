@@ -1,3 +1,4 @@
+from backend.model_training.inference import predict_one
 from fastapi import FastAPI, Query, UploadFile, File, HTTPException
 from pydantic import BaseModel
 import requests
@@ -175,11 +176,6 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
     """
     Upload a CSV file to detect exoplanets for multiple planets at once.
     
-    Expected CSV format:
-    - period: Orbital period in days
-    - impact: Impact parameter (0-1) 
-    - depth: Transit depth in parts per million
-    
     Returns:
         List of exoplanet detection results for each row in the CSV
     """
@@ -207,25 +203,10 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
         # Process each row
         results = []
         for index, row in df.iterrows():
-            try:
-                period = float(row['period'])
-                impact = float(row['impact'])
-                depth = float(row['depth'])
-                
-                result = detect_single_exoplanet(period, impact, depth)
-                result['row_number'] = index + 1  # 1-indexed for user convenience
-                results.append(result)
-                
-            except (ValueError, TypeError) as e:
-                results.append({
-                    "row_number": index + 1,
-                    "error": f"Invalid data in row {index + 1}: {str(e)}",
-                    "input_parameters": {
-                        "period": row.get('period', 'N/A'),
-                        "impact": row.get('impact', 'N/A'),
-                        "depth": row.get('depth', 'N/A')
-                    }
-                })
+            data = row.to_dict()
+            result = predict_one(data)
+            results.append(result)
+        return {"predictions": results}
         
         # Calculate summary statistics
         total_rows = len(results)
@@ -246,3 +227,24 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing CSV file: {str(e)}")
+    
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    if file.content_type != 'text/csv':
+        raise HTTPException(status_code=400, detail="File must be a CSV")
+    content = await file.read()
+    try:
+        df = pd.read_csv(StringIO(content.decode('utf-8')))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid CSV file")
+    try:
+        
+        results = []
+        for index, row in df.iterrows():
+            data = row.to_dict()
+            result = predict_one(data)
+            results.append(result)
+        return {"predictions": results}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Preprocessing failed: {str(e)}")
+   

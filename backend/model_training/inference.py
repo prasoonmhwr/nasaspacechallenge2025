@@ -4,7 +4,8 @@ from feature_engineering import add_physics_features, preprocess_features
 
 model = joblib.load('ensemble_model.sav')
 scaler = joblib.load('scaler.sav')
-label_encoder = joblib.load('label_encoder.sav')
+encode_map = { "FALSE POSITIVE": 0, "CANDIDATE": 1, "CONFIRMED": 2 }
+decode_map = {v: k for k, v in encode_map.items()}
 
 def predict_one(json_input):
     df = pd.DataFrame([json_input])
@@ -14,7 +15,7 @@ def predict_one(json_input):
     preds = model.predict(X)
     proba = model.predict_proba(X)
     return {
-        'prediction': label_encoder.inverse_transform(preds)[0],
+        'prediction': decode_map[int(preds[0])],
         'proba': proba.tolist()[0]
     }
 
