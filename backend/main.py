@@ -206,7 +206,7 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
             data = row.to_dict()
             result = predict_one(data)
             results.append(result)
-        return {"predictions": results}
+        
         
         # Calculate summary statistics
         total_rows = len(results)
