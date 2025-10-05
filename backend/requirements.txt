@@ -6,4 +6,5 @@ xgboost
 catboost
 requests
 Flask 
+fastapi
 gunicorn
