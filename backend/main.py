@@ -1,3 +1,5 @@
+from urllib.request import Request
+from backend.model_training.inference import predict_one
 from fastapi import FastAPI, Query, UploadFile, File, HTTPException
 from pydantic import BaseModel
 import requests
@@ -175,11 +177,6 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
     """
     Upload a CSV file to detect exoplanets for multiple planets at once.
     
-    Expected CSV format:
-    - period: Orbital period in days
-    - impact: Impact parameter (0-1) 
-    - depth: Transit depth in parts per million
-    
     Returns:
         List of exoplanet detection results for each row in the CSV
     """
@@ -207,25 +204,10 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
         # Process each row
         results = []
         for index, row in df.iterrows():
-            try:
-                period = float(row['period'])
-                impact = float(row['impact'])
-                depth = float(row['depth'])
-                
-                result = detect_single_exoplanet(period, impact, depth)
-                result['row_number'] = index + 1  # 1-indexed for user convenience
-                results.append(result)
-                
-            except (ValueError, TypeError) as e:
-                results.append({
-                    "row_number": index + 1,
-                    "error": f"Invalid data in row {index + 1}: {str(e)}",
-                    "input_parameters": {
-                        "period": row.get('period', 'N/A'),
-                        "impact": row.get('impact', 'N/A'),
-                        "depth": row.get('depth', 'N/A')
-                    }
-                })
+            data = row.to_dict()
+            result = predict_one(data)
+            results.append(result)
+        
         
         # Calculate summary statistics
         total_rows = len(results)
@@ -247,6 +229,17 @@ async def detect_exoplanets_from_csv(file: UploadFile = File(..., description="C
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing CSV file: {str(e)}")
 
+@app.post("/api/predictOne")
+async def predict(request: Request):
+    try:
+        data = await request.json()
+        result = predict_one(data)
+        return result
+    except Exception as e:
+         raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
+   
+
+
 
 if __name__ == "__main__":
     # Allow starting the app with: python main.py
@@ -259,3 +252,4 @@ if __name__ == "__main__":
         )
 
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
